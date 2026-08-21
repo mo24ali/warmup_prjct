@@ -13,6 +13,26 @@ def show_menu():
     print("5. Delete a contact")
     print("6. Exit")
 
+
+def add_contact():
+    name = input("Enter the name : " )
+    phone_number = input("Enter the phone number : " )
+    email = input("Enter the email : " )
+
+
+    contact = {
+        "id": len(contacts) + 1,
+        "name": name,
+        "phone": phone_number,
+        "email": email
+    }
+
+    contacts.append(contact)
+    print("Contact added successfully !")
+
+
+
+
 while True:
     show_menu()
 
