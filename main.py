@@ -1,4 +1,32 @@
-contacts = []
+FILE_NAME = "contacts.txt"
+
+
+def load_contacts():
+    contacts = []
+    try:
+        with open(FILE_NAME, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+
+                contact_id, name, phone, email = line.split(",")
+                contacts.append({
+                    "id": int(contact_id),
+                    "name": name,
+                    "phone": phone,
+                    "email": email
+                })
+    except FileNotFoundError:
+        pass
+
+    return contacts
+
+
+def save_contacts(contacts):
+    with open(FILE_NAME, "w") as f:
+        for contact in contacts:
+            f.write(f"{contact['id']},{contact['name']},{contact['phone']},{contact['email']}\n")
 
 
 def show_menu():
@@ -14,62 +42,126 @@ def show_menu():
     print("6. Exit")
 
 
-def add_contact():
+def add_contact(contacts):
     name = input("Enter the name : " )
     phone_number = input("Enter the phone number : " )
     email = input("Enter the email : " )
 
 
     contact = {
-        "id": len(contacts) + 1,
+        "id": contacts[-1]["id"] + 1 if contacts else 1,
         "name": name,
         "phone": phone_number,
         "email": email
     }
 
     contacts.append(contact)
+    save_contacts(contacts)
     print("Contact added successfully !")
 
 
 
-def print_contact(contact):
-    print(contact["id"]
-        + "- Name: " 
-        + contact["name"] 
-        + "\n - Phone number: " 
-        + contact["phone"] 
-        + "\n - Email: " 
-        + contact["email"])
 
 
 
-    
-def display_all_contacts():
-    for c in contacts:
-        print_contact(c)
+def display_all_contacts(contacts):
+
+    if len(contacts) == 0:
+        print("No contacts found.")
+        return
+
+    for contact in contacts:
+        print(f"\nID: {contact['id']}")
+        print(f"Name: {contact['name']}")
+        print(f"Phone: {contact['phone']}")
+        print(f"Email: {contact['email']}")
+        print("-" * 30)
+
+
+def search_contact(contacts):
+    id_to_search = int(input("Enter the id to be found : "))
+    found = False
+
+    for contact in contacts:
+        if contact["id"] == id_to_search:
+            print(f"\nID: {contact['id']}")
+            print(f"Name: {contact['name']}")
+            print(f"Phone: {contact['phone']}")
+            print(f"Email: {contact['email']}")
+            print("-" * 30)
+            found = True
+            break
+
+    if not found:
+        print("Contact not found.")
+
+
+def update_contact(contacts):
+    id_to_update = int(input("Enter the id of the contact to update : "))
+
+    for contact in contacts:
+        if contact["id"] == id_to_update:
+            print("Press Enter to keep the current value.")
+
+            new_name = input(f"Enter the name ({contact['name']}) : ")
+            new_phone = input(f"Enter the phone number ({contact['phone']}) : ")
+            new_email = input(f"Enter the email ({contact['email']}) : ")
+
+            if new_name:
+                contact["name"] = new_name
+            if new_phone:
+                contact["phone"] = new_phone
+            if new_email:
+                contact["email"] = new_email
+
+            save_contacts(contacts)
+            print("Contact updated successfully !")
+            return
+
+    print("Contact not found.")
+
+
+def delete_contact(contacts):
+    id_to_delete = int(input("Enter the id of the contact to delete : "))
+
+    for contact in contacts:
+        if contact["id"] == id_to_delete:
+            contacts.remove(contact)
+            save_contacts(contacts)
+            print("Contact deleted successfully !")
+            return
+
+    print("Contact not found.")
+
+
+contacts = load_contacts()
 
 while True:
+    
     show_menu()
 
     choice = input("type your choice in here: ")
 
     if choice == "1":
         print("Add a contact")
-        add_contact()
+        add_contact(contacts)
 
     elif choice == "2":
         print("Display all contact")
         display_all_contacts(contacts)
 
-        
+
     elif choice == "3":
         print("Search contact")
+        search_contact(contacts)
 
     elif choice == "4":
         print("Update contact")
+        update_contact(contacts)
 
     elif choice == "5":
         print("Delete contact")
+        delete_contact(contacts)
 
     elif choice == "6":
         print("Goodbye!")
