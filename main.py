@@ -32,6 +32,21 @@ def add_contact():
 
 
 
+def print_contact(contact):
+    print(contact["id"]
+        + "- Name: " 
+        + contact["name"] 
+        + "\n - Phone number: " 
+        + contact["phone"] 
+        + "\n - Email: " 
+        + contact["email"])
+
+
+
+    
+def display_all_contacts():
+    for c in contacts:
+        print_contact(c)
 
 while True:
     show_menu()
@@ -40,10 +55,13 @@ while True:
 
     if choice == "1":
         print("Add a contact")
+        add_contact()
 
     elif choice == "2":
         print("Display all contact")
+        display_all_contacts(contacts)
 
+        
     elif choice == "3":
         print("Search contact")
 
